@@ -13,12 +13,12 @@ localhost:4000/graphql
 ```javascript
 {
 	movie(id: 399055) {
-	  title
-    id
-    reviews(lang: "en-US") {
-      author
-      content
-    }
+		title
+		id
+    		reviews(lang: "en-US") {
+      			author
+		      	content
+    		}
 	} 
 }
 ```

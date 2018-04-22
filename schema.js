@@ -24,13 +24,22 @@ const MovieType = new GraphQLObjectType({
     description: '......',
 
     fields: () => ({
+        id: {
+            type: GraphQLInt,
+            resolve: movie => movie.id
+        },
         title: {
             type: GraphQLString,
-            resolve: d => d.title
+            resolve: movie => movie.title
         },
         reviews: {
             type: new GraphQLList(ReviewType),
-            resolve: d => d.reviews
+            resolve: movie => fetch(`https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${api_key}&language=en-US&page=1`)
+                .then(res => res.json())
+                .then(reviews => {
+                    console.log(`fetching reviews...`);
+                    return reviews.results;
+                })
         }
     })
 })
@@ -47,27 +56,8 @@ module.exports = new GraphQLSchema({
                 },
                 resolve: (root, args) => fetch(`https://api.themoviedb.org/3/movie/${args.id}?api_key=${api_key}&language=en-US`)
                 .then(res => res.json())
-                .then(movie => fetch(`https://api.themoviedb.org/3/movie/${args.id}/reviews?api_key=${api_key}&language=en-US&page=1`)
-                    .then(res2 => res2.json())
-                    .then(reviews => {
-                        let obj = {
-                            title: movie.title,
-                            reviews: reviews.results,
-                        };
-                        return obj;
-                    })
-                )
+                .then(movie => movie)
             }
         })
     })
 })
-
-// fetch(`https://api.themoviedb.org/3/movie/${args.id}/reviews?api_key=${api_key}&language=en-US&page=1`)
-// .then(res => res.json())
-// .then(reviews => {
-//     let obj = {
-//         title: movie.title,
-//         reviews: reviews.results,
-//     };
-//     return obj;
-// })

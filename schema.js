@@ -33,13 +33,13 @@ const MovieType = new GraphQLObjectType({
             resolve: movie => movie.title
         },
         reviews: {
+            args: {
+                lang: { type: GraphQLString }
+            },
             type: new GraphQLList(ReviewType),
-            resolve: movie => fetch(`https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${api_key}&language=en-US&page=1`)
+            resolve: (movie, args) => fetch(`https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${api_key}&language=${args.lang ? args.lang : 'en-US'}&page=1`)
                 .then(res => res.json())
-                .then(reviews => {
-                    console.log(`fetching reviews...`);
-                    return reviews.results;
-                })
+                .then(reviews => reviews.results)
         }
     })
 })

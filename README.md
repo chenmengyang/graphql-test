@@ -12,12 +12,13 @@ localhost:4000/graphql
 ## Test query
 ```javascript
 {
-  movie(id: 269149) {
-    title,
-    reviews {
+	movie(id: 399055) {
+	  title
+    id
+    reviews(lang: "en-US") {
       author
       content
     }
-  }
+	} 
 }
 ```
